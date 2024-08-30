@@ -1,19 +1,36 @@
-import { useState } from 'react'
-import Greeter from './Greeter'
+import { useState, memo } from 'react'
 import './App.css'
-import Die from './Die'
-import ListPicker from './ListPicker'
-import Button from './Button'
-import Todo from './Todo'
-import Slots from './Slots'
+import TodoApp from './Todo';
+import CardWrapper from './CardWrapper';
 
 function App() {
+  // const [title, setTitle] = useState("my name is Harshit");
+
+  // function updateTitle(){
+  //   setTitle(`my name is ${Math.random()}`)
+  // }
   return (
-    <>
-   <Slots val1="🍒" val2="🍒" val3="🍒"/>
-   <Slots val1="🍒" val2="🍌" val3="🍒"/>
-   </>
+    <div style={{display: "flex"}}>
+      <CardWrapper>Hi There</CardWrapper>
+      <CardWrapper>Hi There II</CardWrapper>
+
+      {/* <TodoApp/> 
+      <button onClick={updateTitle}>Update the title</button>
+      <Header title={title} />
+      <Header title="Rakshita" />
+      <Header title="Rakshita" />
+      <Header title="Rakshita" />
+      <Header title="Rakshita" /> */}
+    </div>
   )
 }
+
+const Header = memo(function Header({ title }) {
+  return <h1>
+    {title}
+  </h1>
+})
+
+
 
 export default App
