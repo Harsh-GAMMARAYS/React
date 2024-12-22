@@ -4,22 +4,27 @@ import { RecoilRoot, useRecoilStateLoadable } from 'recoil';
 import { todosAtomFamily } from './atoms';
 
 function App() {
-  return <RecoilRoot>
-    <Todo id={1}/>
-    <Todo id={2} />
-  </RecoilRoot>
+
+  const todoIds = Array.from({ length: 10 }, (_, index) => index + 1);
+  return (
+    <RecoilRoot>
+      {todoIds.map(id => (
+        <Todo key={id} id={id} />
+      ))}
+    </RecoilRoot>
+  );
 }
 
-function Todo({id}) {
-   const [todo, setTodo] = useRecoilStateLoadable(todosAtomFamily(id));
-   if (todo.state === "loading") {
-      return <div>loading</div>
-   }
-   
-   return (
+function Todo({ id }) {
+  const [todo, setTodo] = useRecoilStateLoadable(todosAtomFamily(id));
+  if (todo.state === "loading") {
+    return <div>loading</div>
+  }
+
+  return (
     <>
-      {todo.contents.title}
-      {todo.contents.description}
+      <div>{todo.contents.title}
+        {todo.contents.completed ? "✅" : "❌"}</div>
       <br />
     </>
   )
