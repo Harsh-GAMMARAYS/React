@@ -1,10 +1,14 @@
+if (process.env.NODE_ENV !== "production") {
+    require('dotenv').config();
+}
+
 const express = require('express');
 const router = express.Router();
 const zod = require('zod');
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET;
-const { User } = require('../db');
-const {authMiddleware} = require('../middleware');
+const { User, Account } = require('../db');
+const { authMiddleware } = require('../middleware');
 
 const signupBody = zod.object({
     username: zod.string().email(),
@@ -38,14 +42,14 @@ router.post("/signup", async (req, res) => {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
     })
-    
+
     const userId = user._id;
 
     await Account.create({
         userId,
-        balance: 1+ Math.random() * 10000
+        balance: 1 + Math.random() * 10000
     });
-    
+
     const token = jwt.sign({
         userId
     }, JWT_SECRET);
@@ -99,7 +103,7 @@ const updateBody = zod.object({
     lastName: zod.string().optional(),
 })
 
-router.put('/', authMiddleware, async(req, res) => {
+router.put('/', authMiddleware, async (req, res) => {
     const { success } = updateBody.safeParse(req.body)
     if (!success) {
         res.status(411).json({
@@ -107,7 +111,7 @@ router.put('/', authMiddleware, async(req, res) => {
         })
     }
 
-    await User.updateOne({_id:req.userId}, req.body);
+    await User.updateOne({ _id: req.userId }, { $set: req.body });
 
     res.json({
         message: "Updated successfully!"
@@ -120,19 +124,19 @@ router.get('/bulk', async (req, res) => {
     const filter = req.query.filter || "";
 
     const users = await User.find({
-        $or:[{
+        $or: [{
             firstName: {
-                "$regex":filter
+                "$regex": filter
             }
         }, {
             lastName: {
-                "$regex":filter
+                "$regex": filter
             }
         }]
     })
 
     res.json({
-        user:users.map(user =>({
+        user: users.map(user => ({
             username: user.username,
             firstName: user.firstName,
             lastName: user.lastName,

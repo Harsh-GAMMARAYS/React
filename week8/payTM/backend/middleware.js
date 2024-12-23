@@ -6,7 +6,7 @@ const authMiddleware = (req, res, next) => {
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return res.status(403).json({
-            message: Nope,
+            message: "Nope"
         });
     }
 

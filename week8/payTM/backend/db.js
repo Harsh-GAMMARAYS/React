@@ -3,21 +3,9 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 const mongoose = require("mongoose");
+const dbUrl ='mongodb://localhost:27017/paytm';
 
-const dbUrl = process.env.MONGO_URL || 'mongodb://localhost:27017/payTM';
-const dbConnection = async () => {
-    try {
-        const conn = await mongoose.connect(dbUrl, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
-        console.log(`App is connected to ${conn.connection.host}`);
-    } catch (error) {
-        console.error(`Database connection error: ${error.message}`);
-        process.exit(1);
-    }
-};
-
+mongoose.connect(dbUrl);
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -25,31 +13,31 @@ const userSchema = new mongoose.Schema({
         unique: true,
         trim: true,
         lowercase: true,
-        minlength: 3,
-        maxlength: 30
+        minLength: 3,
+        maxLength: 30
     },
     password: {
         type: String,
         required: true,
-        minlength: 6
+        minLength: 6
     },
     firstName: {
         type: String,
         required: true,
         trim: true,
-        maxlength: 50
+        maxLength: 50
     },
     lastName: {
         type: String,
         required: false,
         trim: true,
-        maxlength: 50
+        maxLength: 50
     }
 });
 
 const accountSchema = new mongoose.Schema({
     userId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId, 
         ref: 'User',
         required: true
     },
@@ -57,13 +45,12 @@ const accountSchema = new mongoose.Schema({
         type: Number,
         required: true
     }
-})
+});
 
-const User = mongoose.model('User', userSchema);
 const Account = mongoose.model('Account', accountSchema);
+const User = mongoose.model('User', userSchema);
 
-mongoose.export = {
-    dbConnection,
-    User,
-    Account,
+module.exports = {
+	User,
+    Account
 };
